@@ -1,0 +1,79 @@
+  base_model: Qwen/Qwen2.5-7B-Instruct  
+
+  load_in_8bit: false
+  load_in_4bit: false
+  strict: false
+
+  rl: grpo
+  trl:
+    beta: 0.01
+    max_completion_length: 500
+    use_vllm: true
+    reward_funcs:
+      - setwise_grpo.fbeta_citation_reward_func # 5
+      - setwise.xmlcount_reward_func # 0.5
+      - setwise_grpo.formatting_reward_func # 0.5
+      - setwise_grpo.unicode_reward_func
+      - setwise_grpo.length_reward_func
+    vllm_gpu_memory_utilization: 0.7
+    vllm_max_model_len: 8192
+    num_generations: 7
+
+  chat_template: qwen_25
+  shuffle_merged_datasets: true
+  datasets:
+    - path: TODO:
+      type: setwise_grpo.axo_rank_rl_transform
+
+  test_datasets:
+    - path: TODO:
+      type: setwise_grpo.axo_rank_rl_transform
+  
+  debug: true
+
+  dataset_prepared_path: TODO:
+  skip_prepare_dataset: false
+  val_set_size: 0
+
+  output_dir: TODO:
+
+  dataloader_prefetch_factor: 2
+  dataloader_num_workers: 32
+  dataloader_pin_memory: true
+  gc_steps: 1
+
+  sequence_len: 8192
+  sample_packing: false
+  eval_sample_packing: false
+  pad_to_sequence_len: false
+
+  wandb_project: Rank-RL
+  wandb_entity:
+  wandb_name:
+
+  gradient_accumulation_steps: 6
+  micro_batch_size: 7
+  num_epochs: 1
+
+  optimizer: adamw_torch_fused
+  lr_scheduler: constant_with_warmup
+  learning_rate: 1.0e-6
+  max_grad_norm: 1.0
+  weight_decay: 0
+
+  bf16: true
+  tf32: true
+
+  gradient_checkpointing: true
+  gradient_checkpointing_kwargs:
+    use_reentrant: false
+  flash_attention: true
+
+  logging_steps: 1
+  warmup_steps: 50
+  eval_strategy:
+  evals_per_epoch: 50
+  save_strategy: "no"
+  save_total_limit: 1
+
+  seed: 42
